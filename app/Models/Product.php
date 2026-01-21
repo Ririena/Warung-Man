@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
@@ -11,11 +12,13 @@ class Product extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'image',
-        'title',
-        'description',
-        'price',
-        'stock',
-    ];
+    protected $guarded = ['id'];
+    public function kategori():BelongsTo
+    {
+        return $this->belongsTo(Kategori::class,"id_kategori");
+    }
+    public function transaksi():BelongsTo
+    {
+        return $this->belongsTo(Transaksi::class,"id_");
+    }
 }
