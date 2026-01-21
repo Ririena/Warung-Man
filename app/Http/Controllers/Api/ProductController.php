@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Product;
 
 use App\Http\Controllers\Controller;
-
+use App\Http\Requests\productRequest;
 //import resource ProductResource
 use App\Http\Resources\ProductResource;
 
