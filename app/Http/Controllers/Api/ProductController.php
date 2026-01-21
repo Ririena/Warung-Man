@@ -26,15 +26,10 @@ class ProductController extends Controller
         return new ProductResource(true, 'List Data Products', $products);
     }
 
-    public function store($request)
+    public function store(productRequest $request)
     {
-        $validated = $request->validate(
-            [
-
-                'name' => 'required'
-            ]
-        );
-
-        $product = Product::create($validated);
+        $request->validate();
+        $products = Product::create($request->all());
+        return new ProductResource(true, "product create succes", $products);
     }
 }
