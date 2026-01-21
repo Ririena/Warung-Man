@@ -16,6 +16,7 @@ public function up(): void
         $table->string('image');
         $table->string('title');
         $table->text('description');
+        $table->foreignId("id_kategori")->constrained("kategoris")->cascadeOnDelete();
         $table->bigInteger('price');
         $table->integer('stock')->default(0);
         $table->timestamps();
