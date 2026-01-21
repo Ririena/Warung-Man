@@ -25,4 +25,16 @@ class ProductController extends Controller
         //return collection of products as a resource
         return new ProductResource(true, 'List Data Products', $products);
     }
+
+    public function store($request)
+    {
+        $validated = $request->validate(
+            [
+
+                'name' => 'required'
+            ]
+        );
+
+        $product = Product::create($validated);
+    }
 }
