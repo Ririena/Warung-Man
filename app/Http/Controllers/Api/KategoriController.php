@@ -11,7 +11,12 @@ use Illuminate\Http\Request;
 class KategoriController extends Controller
 {
     public function index(){
-        return new KategoriResource(true,"berhasil",Kategori::all());
+        $data = Kategori::all();
+        return response()->json([
+            "status" => "success",
+            "msg" => "berhasil mengambil data",
+            "data" => $data,
+        ],200);
     }
     public function store(Request $request){
     $validator = validator($request->all(),[
@@ -60,7 +65,7 @@ class KategoriController extends Controller
             return response()->json([
                 "status" => "Err",
                 "msg" => "data tidak ditemukan",
-            ]);
+            ],404);
         }
     }
 
