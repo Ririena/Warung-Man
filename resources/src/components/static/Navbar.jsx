@@ -23,7 +23,7 @@ export function Navbar() {
 
                     <div className="hidden md:flex items-center gap-8">
                         <Link
-                            to="#"
+                            to="/product"
                             className="text-sm font-medium hover:text-accent transition-colors"
                         >
                             Produk
