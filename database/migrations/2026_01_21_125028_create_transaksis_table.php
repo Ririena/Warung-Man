@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->date("transaction_date")->useCurrent();
+            $table->boolean("is_paidOrNah")->default(false);
+            $table->bigInteger("totals");
+            $table->foreignId("id_user")->constrained("users")->cascadeOnDelete();
             $table->timestamps();
         });
     }

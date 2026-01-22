@@ -65,7 +65,7 @@ class KategoriController extends Controller
             return response()->json([
                 "status" => "Err",
                 "msg" => "data tidak ditemukan",
-            ]);
+            ],404);
         }
     }
 
