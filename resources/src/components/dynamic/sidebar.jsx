@@ -17,7 +17,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <h1 className="text-2xl font-bold text-primary">Admin</h1>
-        <p className="text-sm text-muted-foreground">E-commerce Dashboard</p>
+        <p className="text-sm text-muted-foreground">Warung Mang Dashboard</p>
       </div>
 
       {/* Navigation */}
