@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\UpdateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
@@ -13,3 +17,15 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('/products', ProductController::class);
 Route::apiResource('/kategoris', KategoriController::class);
+
+Route::post('/register', RegisterController::class)->name('register');
+Route::post('/login', LoginController::class)->name('login');
+Route::post('/logout', LogoutController::class)->name('logout');
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::put('/update', UpdateController::class)->name('update');
+});
+
