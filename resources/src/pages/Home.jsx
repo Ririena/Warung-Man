@@ -3,10 +3,11 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useFetch } from "@/lib/useFetch";
 import { UserStore } from "@/context/UserContext";
+import { ProductsCard } from "@/features/products/ProductsCard";
 const Home = () => {
     const { data, loading, error, fetchData } = useFetch("api/products");
     const [user, setUser] = useContext(UserStore);
-console.log(user)
+    console.log(user);
     useEffect(() => {
         fetchData();
     }, []);
@@ -22,11 +23,7 @@ console.log(user)
     console.log(data);
     return (
         <>
-            <div>Home Content</div>
-            <div>
-                <p>Token: {user?.token}</p>
-                <p>Nama: {user?.user?.name}</p>
-            </div>
+        <ProductsCard/>
         </>
     );
 };

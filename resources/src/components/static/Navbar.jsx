@@ -2,11 +2,35 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Search, Menu, X } from "lucide-react";
+import { ShoppingCart, Search, Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const MAIN_MENU = [
+        { label: "Produk", to: "/product" },
+        { label: "Kontak", to: "/contact" },
+    ];
+
+    const USER_MENU = [
+        { label: "Profile", to: "/profile" },
+        { label: "Pesanan", to: "/orders" },
+        { label: "Logout", to: "/logout", danger: true },
+    ];
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-border bg-background">
@@ -22,29 +46,56 @@ export function Navbar() {
                     </Link>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <Link
-                            to="/product"
-                            className="text-sm font-medium hover:text-accent transition-colors"
-                        >
-                            Produk
-                        </Link>
-
-                        <Link
-                            to="#"
-                            className="text-sm font-medium hover:text-accent transition-colors"
-                        >
-                            Kontak
-                        </Link>
+                        {MAIN_MENU.map((item) => (
+                            <Link
+                                key={item.label}
+                                to={item.to}
+                                className="text-sm font-medium hover:text-accent transition-colors"
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <button className="p-2 hover:bg-secondary rounded-lg transition-colors hidden sm:inline-flex">
+                        <Button className="p-2  rounded-lg transition-colors hidden sm:inline-flex">
                             <Search className="w-5 h-5" />
-                        </button>
-                        <button className="p-2 hover:bg-secondary rounded-lg transition-colors relative">
+                        </Button>
+                        <Button className="p-2  rounded-lg transition-colors relative">
                             <ShoppingCart className="w-5 h-5" />
                             <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
-                        </button>
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="p-2 rounded-lg"
+                                >
+                                    <User className="w-5 h-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent className="w-48" align="end">
+                                <DropdownMenuLabel className="text-center">
+                                    Akun Saya
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+
+                                {USER_MENU.map((item) => (
+                                    <DropdownMenuItem
+                                        key={item.label}
+                                        asChild
+                                        className={
+                                            item.danger
+                                                ? "text-red-500 hover:cursor-pointer"
+                                                : "hover:cursor-pointer"
+                                        }
+                                    >
+                                        <Link to={item.to}>{item.label}</Link>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}

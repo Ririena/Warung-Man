@@ -17,32 +17,30 @@ export const LoginCard = () => {
         password: "",
     });
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    try {
-        const res = await axios.post(
-            "http://localhost:8000/api/login",
-            formData
-        );
+        try {
+            const res = await axios.post(
+                "http://localhost:8000/api/login",
+                formData,
+            );
 
-        const { token, user } = res.data;
+            const { token, user } = res.data;
 
-        localStorage.setItem("TOKEN", token);
-        axios.defaults.headers.authorization = `Bearer ${token}`;
+            localStorage.setItem("TOKEN", token);
+            axios.defaults.headers.authorization = `Bearer ${token}`;
 
-        setUser({
-            token,
-            user,
-        });
+            setUser({
+                token,
+                user,
+            });
 
-        navigate("/");
-        alert("Success");
-    } catch (error) {
-        console.error(error.response?.data || error.message);
-    }
-};
-
+            navigate("/", setTimeout(1000));
+        } catch (error) {
+            console.error(error.response?.data || error.message);
+        }
+    };
 
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
