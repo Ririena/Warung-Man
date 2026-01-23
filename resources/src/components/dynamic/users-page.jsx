@@ -18,7 +18,7 @@ const mockUsers = [
 export default function UsersPage() {
   const [users, setUsers] = useState(mockUsers)
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Inactive'>('All')
+  const [statusFilter, setStatusFilter] = useState()
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =

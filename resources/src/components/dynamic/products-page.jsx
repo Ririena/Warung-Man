@@ -1,26 +1,30 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Edit2, Trash2, Search } from 'lucide-react'
+import { useFetch } from '@/lib/useFetch'
 
 
-const mockProducts = [
-  { id: '1', name: 'Wireless Headphones', category: 'Electronics', price: '$89.99', stock: 45, status: 'Active' },
-  { id: '2', name: 'Laptop Stand', category: 'Office', price: '$34.99', stock: 120, status: 'Active' },
-  { id: '3', name: 'USB-C Cable', category: 'Electronics', price: '$12.99', stock: 5, status: 'Active' },
-  { id: '4', name: 'Desk Lamp', category: 'Office', price: '$29.99', stock: 30, status: 'Inactive' },
-  { id: '5', name: 'Mechanical Keyboard', category: 'Electronics', price: '$129.99', stock: 23, status: 'Active' },
-  { id: '6', name: 'Monitor Arm', category: 'Office', price: '$44.99', stock: 15, status: 'Active' },
-  { id: '7', name: 'Webcam HD', category: 'Electronics', price: '$59.99', stock: 8, status: 'Active' },
-  { id: '8', name: 'Desk Organizer', category: 'Office', price: '$19.99', stock: 60, status: 'Active' },
-]
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState(mockProducts)
+    const {data,loading,error,fetchData} = useFetch("/api/products");
+  const [products, setProducts] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+    useEffect(() => {
+        fetchData()
+    },[])
+useEffect(() => {
+  const productList = data?.data?.data
+  if (Array.isArray(productList)) {
+    setProducts(productList)
+  }
+}, [data])
 
+    if(loading)return <p>loading..</p>
+    if(error)return <p>err.</p>
+    console.log(products)
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+    product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.kategori.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleDelete = (id) => {
@@ -73,8 +77,8 @@ export default function ProductsPage() {
                   key={product.id}
                   className="border-b border-border hover:bg-secondary transition-colors last:border-b-0"
                 >
-                  <td className="py-4 px-6 text-foreground font-medium">{product.name}</td>
-                  <td className="py-4 px-6 text-muted-foreground">{product.category}</td>
+                  <td className="py-4 px-6 text-foreground font-medium">{product.title}</td>
+                  <td className="py-4 px-6 text-muted-foreground">{product.kategori.name}</td>
                   <td className="py-4 px-6 text-foreground font-semibold">{product.price}</td>
                   <td className="py-4 px-6">
                     <span
@@ -92,12 +96,12 @@ export default function ProductsPage() {
                   <td className="py-4 px-6">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                        product.status === 'Active'
+                        product.stock > 0
                           ? 'bg-green-100 text-green-700'
                           : 'bg-gray-100 text-gray-700'
                       }`}
                     >
-                      {product.status}
+                      {product.stock > 0  ? "Active" : "non active" }
                     </span>
                   </td>
                   <td className="py-4 px-6">

@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         //get all products
-        $products = Product::latest()->paginate(5);
+        $products = Product::latest()->with("kategori")->paginate(5);
 
         //return collection of products as a resource
         return new ProductResource(true, 'List Data Products', $products);
@@ -44,8 +44,15 @@ class ProductController extends Controller
             "msg" => $validator->errors(),
         ],400);
        }
-        $products = Product::create(request()->all());
-        return new ProductResource(true, "product create succes", $products);
+                $produk = new Product();
+                $produk->image = request()->image;
+                $produk->title = request()->title;
+                $produk->description = request()->description;
+                $produk->id_kategori = request()->id_kategori;
+                $produk->price = request()->price;
+                $produk->stock = request()->stock;
+                $produk->save();
+        return new ProductResource(true, "product create succes", $produk);
     }
     public function show(string $id){
         try{
