@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFetch } from "@/lib/useFetch";
+import { UserStore } from "@/context/UserContext";
 const Home = () => {
     const { data, loading, error, fetchData } = useFetch("api/products");
-
+    const [user, setUser] = useContext(UserStore);
+console.log(user)
     useEffect(() => {
         fetchData();
     }, []);
@@ -18,10 +20,13 @@ const Home = () => {
     }
 
     console.log(data);
-
     return (
         <>
             <div>Home Content</div>
+            <div>
+                <p>Token: {user?.token}</p>
+                <p>Nama: {user?.user?.name}</p>
+            </div>
         </>
     );
 };
