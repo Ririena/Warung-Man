@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
-    //
     protected $fillable = [
         'id_cart',
         'id_product',
@@ -17,6 +16,6 @@ class CartItem extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'id_product');
     }
 }

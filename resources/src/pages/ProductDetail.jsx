@@ -3,37 +3,95 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Container } from "@/components/ui/container";
 import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useFetch } from "@/lib/useFetch";
 
 const ProductDetail = () => {
+    const { id } = useParams();
     const [qty, setQty] = useState(1);
+    const [loadingCart, setLoadingCart] = useState(false);
+
+    const { data, loading, fetchData } = useFetch(`api/products/${id}`);
+
+    useEffect(() => {
+        fetchData();
+    }, [id]);
+
+    const handleAddToCart = async () => {
+    try {
+        setLoadingCart(true);
+
+        const token = localStorage.getItem("TOKEN");
+        if (!token) {
+            alert("Silakan login dulu");
+            return;
+        }
+
+        const res = await fetch("/api/cart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                id_product: product.id,
+                quantity: qty,
+            }),
+        });
+
+        const text = await res.text();
+        const result = JSON.parse(text);
+
+        if (!res.ok) {
+            throw new Error(result.message || "Gagal tambah ke cart");
+        }
+
+        alert("Produk berhasil ditambahkan ke keranjang 🛒");
+    } catch (error) {
+        console.error(error.message);
+    } finally {
+        setLoadingCart(false);
+    }
+};
+
+
+    if (loading) return <div>Loading...</div>;
+    if (!data?.data) return <div>Product not found</div>;
+
+    const product = data.data;
 
     return (
         <Container>
             <Card className="rounded-sm">
                 <CardContent className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="w-full aspect-square bg-muted rounded-sm" />
+                        {/* IMAGE */}
+                        <div className="w-full aspect-square bg-muted rounded-sm overflow-hidden">
+                            <img
+                                src={product.image || "/img/download.jpg"}
+                                alt={product.title}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
 
-                        {/* INFO PROUDUK */}
+                        {/* INFO PRODUK */}
                         <div className="space-y-5">
                             <div>
                                 <h1 className="text-2xl font-bold">
-                                    Nama Produk
+                                    {product.title}
                                 </h1>
                                 <p className="text-xl font-semibold text-primary mt-1">
-                                    Rp 25.000
+                                    Rp {product.price}
                                 </p>
                             </div>
 
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Lorem, ipsum dolor sit amet consectetur
-                                adipisicing elit. Accusamus dolores possimus, at
-                                corporis aut incidunt? Eveniet voluptatem
-                                accusantium quas officia?
+                                {product.description}
                             </p>
 
-                            {/* Action */}
+                            {/* QTY */}
                             <div className="flex items-center gap-3">
                                 <span className="text-sm font-medium">
                                     Jumlah
@@ -45,7 +103,7 @@ const ProductDetail = () => {
                                         variant="ghost"
                                         onClick={() =>
                                             setQty((prev) =>
-                                                prev > 1 ? prev - 1 : 1,
+                                                prev > 1 ? prev - 1 : 1
                                             )
                                         }
                                     >
@@ -70,44 +128,35 @@ const ProductDetail = () => {
                                 </div>
                             </div>
 
-                            {/* ACTION */}
-                            <Button size="lg" className="w-full md:w-fit">
-                                Tambah ke Keranjang
+                            {/* ADD TO CART */}
+                            <Button
+                                size="lg"
+                                className="w-full md:w-fit"
+                                onClick={handleAddToCart}
+                                disabled={loadingCart}
+                            >
+                                {loadingCart
+                                    ? "Menambahkan..."
+                                    : "Tambah ke Keranjang"}
                             </Button>
 
-                            {/* INFO Kategori */}
+                            {/* INFO TAMBAHAN */}
                             <div className="text-sm text-muted-foreground space-y-1">
                                 <p>
                                     Kategori:{" "}
                                     <span className="font-medium text-foreground">
-                                        Makanan
+                                        {product.kategori?.name}
                                     </span>
                                 </p>
                                 <p>
                                     Stok:{" "}
                                     <span className="font-medium text-foreground">
-                                        Tersedia
+                                        {product.stock ?? "Tersedia"}
                                     </span>
                                 </p>
                             </div>
                         </div>
                     </div>
-                </CardContent>
-            </Card>
-
-            {/* DESCRIPTION */}
-            <Card className="rounded-sm mt-6 p-4">
-                <CardHeader>
-                    <CardTitle>Deskripsi Produk</CardTitle>
-                </CardHeader>
-
-                <CardContent>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Ut quam amet suscipit exercitationem, deserunt
-                        aspernatur reiciendis. Repellendus inventore unde minima
-                        voluptates qui architecto nesciunt explicabo?
-                    </p>
                 </CardContent>
             </Card>
         </Container>
