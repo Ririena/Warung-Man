@@ -3,9 +3,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { UserStore } from "@/context/UserContext";
 
 const RequireAuth = () => {
-    const [user] = useContext(UserStore);
+    const { user } = useContext(UserStore); // ✅ FIX
 
-    if (!user) {
+    if (!user?.token) {
         return <Navigate to="/login" replace />;
     }
 

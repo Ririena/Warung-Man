@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export const LoginCard = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useContext(UserStore);
+    const {user, setUser} = useContext(UserStore);
     const [formData, setFormData] = useState({
         email: "",
         password: "",

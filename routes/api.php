@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\UpdateController;
 use App\Http\Controllers\Api\userController;
+use App\Http\Controllers\Api\TransaksiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,11 +18,17 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::middleware('auth:api')->group(function () {
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::delete('/cart-item/{id}', [CartController::class, 'destroy']);
+    Route::put('/cart-item/{id}', [CartController::class, 'update']);
+});
 
 Route::apiResource('/products', ProductController::class);
 Route::apiResource('/kategoris', KategoriController::class);
 // Route::get("/users",[userController::class, "index"])->name("user.index");
-Route::apiResource('/users',userController::class);
+Route::apiResource('/users', userController::class);
 Route::post('/register', RegisterController::class)->name('register');
 Route::post('/login', LoginController::class)->name('login');
 Route::post('/logout', LogoutController::class)->name('logout');

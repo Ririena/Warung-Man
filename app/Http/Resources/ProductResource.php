@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
     public function __construct($status, $message, $resource)
     {
         parent::__construct($resource);
-        $this->status  = $status;
+        $this->status = $status;
         $this->message = $message;
     }
 
@@ -34,10 +34,27 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $data = $this->resource;
+
+        if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator) {
+            $data->getCollection()->transform(function ($item) {
+                $item->image = $item->image
+                    ? asset('storage/' . $item->image)
+                    : null;
+                return $item;
+            });
+        }
+        else {
+            $data->image = $data->image
+                ? asset('storage/' . $data->image)
+                : null;
+        }
+
         return [
-            'success'   => $this->status,
-            'message'   => $this->message,
-            'data'      => $this->resource
+            'success' => $this->status,
+            'message' => $this->message,
+            'data' => $data
         ];
     }
+
 }

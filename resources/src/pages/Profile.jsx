@@ -7,10 +7,15 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-    const [user, setUser] = useContext(UserStore);
+    const { user, setUser } = useContext(UserStore); // ✅ FIX
     const navigate = useNavigate();
 
-    console.log(user);
+    console.log({user})
+    // Optional: guard
+    if (!user?.user) {
+        return <div>Loading profile...</div>;
+    }
+
     return (
         <Container>
             <div className="flex flex-col md:flex-row gap-6">
@@ -27,6 +32,7 @@ const Profile = () => {
                             Kelola informasi profil Anda untuk mengontrol,
                             melindungi dan mengamankan akun
                         </p>
+
                         <Separator className="mt-3 mb-4" />
 
                         <div className="space-y-4">
@@ -35,7 +41,7 @@ const Profile = () => {
                                     Nama
                                 </label>
                                 <p className="font-medium">
-                                    {user?.user?.name}
+                                    {user.user.name}
                                 </p>
                             </div>
 
@@ -44,8 +50,7 @@ const Profile = () => {
                                     Email
                                 </label>
                                 <p className="font-medium">
-                                    {" "}
-                                    {user?.user?.email ? user?.user?.email : "Loading"}
+                                    {user.user.email}
                                 </p>
                             </div>
                         </div>
