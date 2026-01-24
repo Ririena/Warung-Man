@@ -1,13 +1,15 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { useFetch } from "@/lib/useFetch";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+
 const Product = () => {
     const { data, loading, error, fetchData } = useFetch("/api/products");
     useEffect(() => {
         fetchData();
     }, []);
-    if(loading) return <p>Loading...</p>;
-    if(error) return <p>Error loading products.</p>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error loading products.</p>;
     const products = data?.data?.data || [];
     return (
         <>
@@ -17,10 +19,13 @@ const Product = () => {
                         {/* Filter Components */}
                     </aside>
                     <section className="flex-1" aria-label="Product list">
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-5 gap-4">
                             {products.length > 0 ? (
                                 products.map((product) => (
-                                    <ProductCard key={product.id} product={product} />
+                                    <ProductCard
+                                        key={product.id}
+                                        product={product}
+                                    />
                                 ))
                             ) : (
                                 <p>No products available.</p>
@@ -35,18 +40,33 @@ const Product = () => {
 
 export default Product;
 
-export const ProductCard = ({product}) => {
+export const ProductCard = ({ product }) => {
     return (
         <>
             <Card>
                 <img
-                    src={product.image || "https://placehold.co/600x400/EEE/31343C"}
+                    src={
+                        product.image ||
+                        "https://placehold.co/1000x1000/EEE/31343C"
+                    }
                     className="object-fit"
-                    width={600}
-                    height={400}
+                    width={1000}
+                    height={1000}
                 />
-                <h1 className="text-xl">{product.title}</h1>
-                <CardTitle>{product.price}</CardTitle>
+                <div className="p-3 grid grid-cols-1 gap-1">
+                    <h1>{product.title}</h1>
+                    <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-1">
+                            <span className="text-green-500"><span className="text-sm">Rp</span>{product.price}</span>
+                        </CardTitle>
+
+                        <span className="text-sm text-gray-500">
+                            Stok {product.stock}
+                        </span>
+                    </div>
+
+                    <Button>Beli</Button>
+                </div>
             </Card>
         </>
     );

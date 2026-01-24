@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Search, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo-warung-man-500x500.png";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,10 +14,15 @@ export function Navbar() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <Link to="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                            {/* Logo Whatever entar */}
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                            <img
+                                src={logo}
+                                className="object-fit"
+                                width={1000}
+                                height={1000}
+                            />
                         </div>
-                        <span className="font-bold text-lg hidden sm:inline">
+                        <span className="text-green-500 font-semibold italic text-lg hidden sm:inline">
                             Warung Man
                         </span>
                     </Link>

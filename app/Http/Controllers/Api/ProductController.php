@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         //get all products
-        $products = Product::latest()->paginate(5);
+        $products = Product::latest()->paginate(20);
 
         //return collection of products as a resource
         return new ProductResource(true, 'List Data Products', $products);
