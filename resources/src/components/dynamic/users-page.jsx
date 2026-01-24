@@ -1,25 +1,28 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Edit2, Trash2, Search, Mail, Phone, MapPin } from 'lucide-react'
+import { useFetch } from '@/lib/useFetch'
 
 
 
-const mockUsers = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', phone: '(555) 123-4567', location: 'New York, USA', joinDate: 'Jan 5, 2023', totalOrders: 12, totalSpent: '$2,456.50', status: 'Active', role: 'Customer' },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '(555) 234-5678', location: 'Los Angeles, USA', joinDate: 'Mar 12, 2023', totalOrders: 8, totalSpent: '$1,875.00', status: 'Active', role: 'Customer' },
-  { id: '3', name: 'Bob Johnson', email: 'bob@example.com', phone: '(555) 345-6789', location: 'Chicago, USA', joinDate: 'May 20, 2023', totalOrders: 5, totalSpent: '$892.75', status: 'Active', role: 'Customer' },
-  { id: '4', name: 'Alice Brown', email: 'alice@example.com', phone: '(555) 456-7890', location: 'Houston, USA', joinDate: 'Jul 8, 2023', totalOrders: 15, totalSpent: '$3,234.25', status: 'Active', role: 'Customer' },
-  { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', phone: '(555) 567-8901', location: 'Phoenix, USA', joinDate: 'Sep 15, 2023', totalOrders: 3, totalSpent: '$543.00', status: 'Inactive', role: 'Customer' },
-  { id: '6', name: 'Diana Davis', email: 'diana@example.com', phone: '(555) 678-9012', location: 'Philadelphia, USA', joinDate: 'Nov 22, 2023', totalOrders: 9, totalSpent: '$1,654.50', status: 'Active', role: 'Moderator' },
-  { id: '7', name: 'Eve Martinez', email: 'eve@example.com', phone: '(555) 789-0123', location: 'San Antonio, USA', joinDate: 'Dec 1, 2023', totalOrders: 7, totalSpent: '$1,245.75', status: 'Active', role: 'Customer' },
-  { id: '8', name: 'Frank Moore', email: 'frank@example.com', phone: '(555) 890-1234', location: 'San Diego, USA', joinDate: 'Jan 10, 2024', totalOrders: 11, totalSpent: '$2,789.00', status: 'Active', role: 'Admin' },
-]
 
 export default function UsersPage() {
-  const [users, setUsers] = useState(mockUsers)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState()
+    const {data,loading,error,fetchData} = useFetch("/api/users")
 
+    const [users, setUsers] = useState([])
+    const [searchTerm, setSearchTerm] = useState('')
+    const [statusFilter, setStatusFilter] = useState()
+    useEffect(() => {
+        fetchData()
+    },[])
+    useEffect(() => {
+        if(data && Array.isArray(data?.data)){
+            setUsers(data?.data)
+        }
+    },[data])
+    if(loading) return <p>loading...</p>
+    if(error) return <p>error</p>
+    console.log(users)
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,14 +64,6 @@ export default function UsersPage() {
         <div className="bg-white rounded-lg p-6 border border-border shadow-sm">
           <p className="text-muted-foreground text-sm font-medium">Total Revenue</p>
           <p className="text-3xl font-bold text-green-600 mt-2">
-            $
-            {(
-              users.reduce((sum, u) => {
-                const spent = parseFloat(u.totalSpent.replace('$', '').replace(',', ''))
-                return sum + spent
-              }, 0) / 1000
-            ).toFixed(1)}
-            K
           </p>
           <p className="text-xs text-muted-foreground mt-2">From all users</p>
         </div>

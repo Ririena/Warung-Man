@@ -13,7 +13,7 @@ public function up(): void
 {
     Schema::create('products', function (Blueprint $table) {
         $table->id();
-        $table->string('image');
+        $table->string('image')->nullable();
         $table->string('title');
         $table->text('description');
         $table->foreignId("id_kategori")->constrained("kategoris")->cascadeOnDelete();

@@ -3,9 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Container } from "@/components/ui/container";
 import { Input } from "@/components/ui/input";
+import { useFetch } from "@/lib/useFetch";
 
-export const ProductsCard = () => {
+export const ProductsCard = ({dataC,dataP}) => {
+    // console.log(product)
+    console.log(dataC,dataP)
     return (
+
         <>
             <Container>
                 <div className="flex flex-col md:flex-row gap-6">
@@ -27,36 +31,19 @@ export const ProductsCard = () => {
                                     <p className="text-sm font-medium">
                                         Kategori
                                     </p>
+                                    {dataC.map((cate) => (
 
                                     <div className="flex items-center space-x-2">
-                                        <Checkbox id="makanan" />
+                                        <Checkbox id={cate.id} />
                                         <label
-                                            htmlFor="makanan"
+                                            htmlFor={cate.id}
                                             className="text-sm"
                                         >
-                                            Makanan
+                                            {cate.name}
                                         </label>
                                     </div>
+                                    ))}
 
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox id="minuman" />
-                                        <label
-                                            htmlFor="minuman"
-                                            className="text-sm"
-                                        >
-                                            Minuman
-                                        </label>
-                                    </div>
-
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox id="snack" />
-                                        <label
-                                            htmlFor="snack"
-                                            className="text-sm"
-                                        >
-                                            Snack
-                                        </label>
-                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
@@ -78,21 +65,26 @@ export const ProductsCard = () => {
 
                     <section className="flex-1">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {[1, 2, 3, 4, 5, 6].map((item) => (
+                            {dataP.map((item) => (
                                 <Card
                                     key={item}
                                     className="rounded-sm overflow-hidden"
                                 >
-                                    <div className="aspect-square bg-muted" />
+                                    <div className="aspect-square bg-muted">
+                                    <img src={ item.image || "/img/download.jpg"} alt={item.title} className="w-full h-full object-cover" />
+                                    </div>
 
                                     <CardContent className="p-4 space-y-2">
                                         <h3 className="font-semibold text-base">
-                                            Nama Produk
+                                            {item.title}
                                         </h3>
-                                        <p className="text-sm text-muted-foreground">
-                                            Rp 25.000
-                                        </p>
 
+                                        <p className="text-sm text-muted-foreground">
+                                            Rp {item.price}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {item.kategori.name}
+                                        </p>
                                         <Button
                                             size="sm"
                                             className="w-full mt-2"

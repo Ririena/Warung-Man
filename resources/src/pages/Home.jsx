@@ -5,25 +5,22 @@ import { useFetch } from "@/lib/useFetch";
 import { UserStore } from "@/context/UserContext";
 import { ProductsCard } from "@/features/products/ProductsCard";
 const Home = () => {
-    const { data, loading, error, fetchData } = useFetch("api/products");
+    const { data:product, loading:loadingProduct, error:errProduct, fetchData:fetchProduct } = useFetch("api/products");
+    const { data:Cate, loading:loadingCate, error:errCate, fetchData:fetchCate } = useFetch("api/kategoris");
     const [user, setUser] = useContext(UserStore);
     console.log(user);
     useEffect(() => {
-        fetchData();
+        fetchProduct();
+        fetchCate();
     }, []);
 
-    if (loading) {
+    if (loadingProduct||loadingCate) {
         return <div>Loading...</div>;
     }
 
-    if (error) {
-        return <div> Error</div>;
-    }
-
-    console.log(data);
     return (
         <>
-        <ProductsCard/>
+        <ProductsCard dataP={product.data.data} dataC={Cate.data} />
         </>
     );
 };
