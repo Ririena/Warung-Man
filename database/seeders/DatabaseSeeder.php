@@ -16,15 +16,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        $roles = ['admin','karyawan','pelanggan'];
-        foreach($roles as $role){
-            Role::create([
-                "name" => $role,
-            ]);
-        }
+        User::factory(10)->create();
+        // $roles = ['admin','karyawan','pelanggan'];
+        // foreach($roles as $role){
+        //     Role::create([
+        //         "name" => $role,
+        //     ]);
+        // }
         Kategori::create([
         "name" => "test"
         ]);
+
     }
 }

@@ -1,29 +1,34 @@
-import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { ProductsCard } from "@/features/products/ProductsCard";
 import { useFetch } from "@/lib/useFetch";
+import { useEffect } from "react";
+
 const Home = () => {
-    const { data, loading, error, fetchData } = useFetch("api/products");
+    const {
+        data: product,
+        loading: loadingProduct,
+        fetchData: fetchProduct,
+    } = useFetch("/api/products");
+
+    const {
+        data: Cate,
+        loading: loadingCate,
+        fetchData: fetchCate,
+    } = useFetch("/api/kategoris");
 
     useEffect(() => {
-        fetchData();
+        fetchProduct();
+        fetchCate();
     }, []);
 
-    if (loading) {
+    if (loadingProduct || loadingCate) {
         return <div>Loading...</div>;
     }
 
-    if (error) {
-        return <div> Error</div>;
-    }
-
-    console.log(data);
-
     return (
-        <>
-            <div>Home Content</div>
-        </>
+        <ProductsCard
+            dataP={product?.data?.data ?? []}
+            dataC={Cate?.data ?? []}
+        />
     );
 };
-
 export default Home;

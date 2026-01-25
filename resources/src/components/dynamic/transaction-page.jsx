@@ -18,7 +18,7 @@ const mockTransactions = [
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState(mockTransactions)
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Completed' | 'Pending' | 'Failed'>('All')
+  const [statusFilter, setStatusFilter] = useState()
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch =
