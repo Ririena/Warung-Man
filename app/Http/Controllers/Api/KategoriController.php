@@ -14,6 +14,10 @@ class KategoriController extends Controller
     {
         return new KategoriResource(true, "berhasil", Kategori::all());
     }
+    public function indexPublic()
+    {
+        return new KategoriResource(true, "berhasil", Kategori::all());
+    }
     public function store(Request $request)
     {
         $validator = validator($request->all(), [

@@ -7,13 +7,13 @@ const Home = () => {
         data: product,
         loading: loadingProduct,
         fetchData: fetchProduct,
-    } = useFetch("/api/products");
+    } = useFetch("/api/products-public");
 
     const {
         data: Cate,
         loading: loadingCate,
         fetchData: fetchCate,
-    } = useFetch("/api/kategoris");
+    } = useFetch("/api/kategoris-public");
 
     useEffect(() => {
         fetchProduct();
