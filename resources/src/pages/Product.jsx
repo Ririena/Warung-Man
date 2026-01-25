@@ -2,6 +2,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { useFetch } from "@/lib/useFetch";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { ShoppingCart } from "lucide-react";
 
 const Product = () => {
     const { data, loading, error, fetchData } = useFetch("/api/products");
@@ -55,9 +56,12 @@ export const ProductCard = ({ product }) => {
                 />
                 <div className="p-3 grid grid-cols-1 gap-1">
                     <h1>{product.title}</h1>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-3">
                         <CardTitle className="flex items-center gap-1">
-                            <span className="text-green-500"><span className="text-sm">Rp</span>{product.price}</span>
+                            <span className="text-green-500">
+                                <span className="text-sm">Rp</span>
+                                {product.price}
+                            </span>
                         </CardTitle>
 
                         <span className="text-sm text-gray-500">
@@ -65,7 +69,10 @@ export const ProductCard = ({ product }) => {
                         </span>
                     </div>
 
-                    <Button>Beli</Button>
+                    <div className="flex gap-1.5 justify-center items-center">
+                        <Button className="w-2/3 cursor-pointer bg-green-600 hover:bg-green-800">Beli</Button>
+                        <Button className="w-1/3 cursor-pointer bg-green-800 hover:bg-green-950"><ShoppingCart/></Button>
+                    </div>
                 </div>
             </Card>
         </>
