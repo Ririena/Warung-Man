@@ -22,6 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         //get all products
+        $products = Product::latest()->paginate(20);
         $products = Product::latest()->with("kategori")->paginate(5);
 
         //return collection of products as a resource
