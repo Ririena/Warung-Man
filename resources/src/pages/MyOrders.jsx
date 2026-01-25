@@ -3,46 +3,72 @@ import { Container } from "@/components/ui/container";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
+import { useState, useEffect } from "react";
 
-const ORDERS = [
-    {
-        id: "ORD-001",
-        date: "12 Jan 2026",
-        status: "Selesai",
-        total: "Rp 120.000",
-        items: 3,
-    },
-    {
-        id: "ORD-002",
-        date: "15 Jan 2026",
-        status: "Dikirim",
-        total: "Rp 75.000",
-        items: 2,
-    },
-    {
-        id: "ORD-003",
-        date: "ORD-003",
-        date: "20 Jan 2026",
-        status: "Diproses",
-        total: "Rp 250.000",
-        items: 5,
-    },
-];
+const statusVariant = (isPaid) => {
+    return isPaid === 1 ? "default" : "outline";
+};
 
-const statusVariant = (status) => {
-    switch (status) {
-        case "Selesai":
-            return "default";
-        case "Dikirim":
-            return "secondary";
-        case "Diproses":
-            return "outline";
-        default:
-            return "outline";
-    }
+const getStatusLabel = (isPaid) => {
+    return isPaid === 1 ? "Lunas" : "Belum Lunas";
 };
 
 const MyOrders = () => {
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const token = localStorage.getItem("TOKEN");
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                setLoading(true);
+                const res = await fetch("/api/transaksi", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
+
+                if (!res.ok) {
+                    throw new Error("Gagal mengambil data transaksi");
+                }
+
+                const data = await res.json();
+
+                // Format data dari API ke format yang sesuai
+                const formattedOrders = (data.data || []).map((order) => ({
+                    id: order.id,
+                    name: order.name,
+                    date: new Date(order.transaction_date).toLocaleDateString('id-ID', {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                    }),
+                    isPaid: order.is_paidOrNah,
+                    total: `Rp ${parseInt(order.totals).toLocaleString("id-ID")}`,
+                }));
+
+                setOrders(formattedOrders);
+                setError(null);
+            } catch (err) {
+                console.error(err);
+                setError(err.message);
+                setOrders([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (!token) {
+            setError("Silakan login dulu");
+            setLoading(false);
+            return;
+        }
+
+        fetchOrders();
+    }, [token]);
+    console.log(orders);
     return (
         <Container>
             <div className="flex flex-col md:flex-row gap-6">
@@ -61,7 +87,31 @@ const MyOrders = () => {
                         <Separator className="mt-3" />
                     </Card>
 
-                    {ORDERS.map((order) => (
+                    {loading && (
+                        <Card className="rounded-sm p-4">
+                            <p className="text-center text-muted-foreground">
+                                Memuat pesanan...
+                            </p>
+                        </Card>
+                    )}
+
+                    {error && (
+                        <Card className="rounded-sm p-4 border-red-200 bg-red-50">
+                            <p className="text-center text-red-600">
+                                {error}
+                            </p>
+                        </Card>
+                    )}
+
+                    {!loading && orders.length === 0 && !error && (
+                        <Card className="rounded-sm p-4">
+                            <p className="text-center text-muted-foreground">
+                                Belum ada pesanan 😢
+                            </p>
+                        </Card>
+                    )}
+
+                    {orders.map((order) => (
                         <Card
                             key={order.id}
                             className="rounded-sm p-4 hover:bg-secondary/40 transition"
@@ -69,9 +119,9 @@ const MyOrders = () => {
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                                 <div>
                                     <p className="text-sm text-muted-foreground">
-                                        Order ID
+                                        Transaction ID
                                     </p>
-                                    <p className="font-medium">{order.id}</p>
+                                    <p className="font-medium">{order.name}</p>
                                 </div>
 
                                 <div>
@@ -91,8 +141,8 @@ const MyOrders = () => {
                                 </div>
 
                                 <div>
-                                    <Badge variant={statusVariant(order.status)}>
-                                        {order.status}
+                                    <Badge variant={statusVariant(order.isPaid)}>
+                                        {getStatusLabel(order.isPaid)}
                                     </Badge>
                                 </div>
                             </div>
@@ -101,7 +151,7 @@ const MyOrders = () => {
 
                             <div className="flex items-center justify-between text-sm">
                                 <span className="text-muted-foreground">
-                                    {order.items} produk
+                                    ID: {order.id}
                                 </span>
 
                                 <button className="text-primary hover:underline">

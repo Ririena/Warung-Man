@@ -6,6 +6,7 @@ import { Minus, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useFetch } from "@/lib/useFetch";
+import Swal from "sweetalert2";
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -27,6 +28,22 @@ const ProductDetail = () => {
             alert("Silakan login dulu");
             return;
         }
+         const confirm = await Swal.fire({
+            title: 'Konfirmasi',
+            html: `<div class="text-left">
+                <p class="mb-2"><strong>${product.title}</strong></p>
+                <p class="mb-2">Harga: <strong>Rp ${parseInt(product.price).toLocaleString('id-ID')}</strong></p>
+                <p>Jumlah: <strong>${qty}</strong></p>
+                <p class="mt-3 font-semibold">Total: Rp ${parseInt(product.price * qty).toLocaleString('id-ID')}</p>
+            </div>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Tambahkan',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#22c55e',
+            cancelButtonColor: '#ef4444',
+        });
+        if(!confirm.isConfirmed) return;
 
         const res = await fetch("/api/cart", {
             method: "POST",
@@ -45,10 +62,20 @@ const ProductDetail = () => {
         const result = JSON.parse(text);
 
         if (!res.ok) {
-            throw new Error(result.message || "Gagal tambah ke cart");
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: result.message || 'Gagal tambah ke cart',
+            });
+            return;
         }
 
-        alert("Produk berhasil ditambahkan ke keranjang 🛒");
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: result.message || 'Berhasil tambah ke cart',
+            confirmButtonColor: '#22c55e',
+        });
     } catch (error) {
         console.error(error.message);
     } finally {
@@ -83,7 +110,7 @@ const ProductDetail = () => {
                                     {product.title}
                                 </h1>
                                 <p className="text-xl font-semibold text-primary mt-1">
-                                    Rp {product.price}
+                                    Rp {product.price.toLocaleString("id-ID")}
                                 </p>
                             </div>
 

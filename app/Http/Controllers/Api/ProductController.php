@@ -28,6 +28,15 @@ class ProductController extends Controller
         //return collection of products as a resource
         return new ProductResource(true, 'List Data Products', $products);
     }
+    public function indexPublic()
+    {
+        //get all products
+        $products = Product::latest()->paginate(20);
+        $products = Product::latest()->with("kategori")->paginate(5);
+
+        //return collection of products as a resource
+        return new ProductResource(true, 'List Data Products', $products);
+    }
 
     public function store(Request $request)
     {

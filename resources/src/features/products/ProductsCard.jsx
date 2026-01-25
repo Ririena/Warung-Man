@@ -12,7 +12,6 @@ export const ProductsCard = ({ dataC, dataP }) => {
     const handleNavigation = (id) => {
         navigate(`/products/${id}`);
     };
-    console.log(dataC, dataP);
     return (
         <>
             <Container>
@@ -91,7 +90,7 @@ export const ProductsCard = ({ dataC, dataP }) => {
                                             </h3>
 
                                             <p className="text-sm text-muted-foreground">
-                                                Rp {item.price}
+                                                Rp {parseInt(item.price).toLocaleString('id-ID')}
                                             </p>
 
                                             <p className="text-sm text-muted-foreground">

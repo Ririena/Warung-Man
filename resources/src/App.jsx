@@ -20,27 +20,33 @@ import Profile from "./pages/Profile";
 import DashboardOverview from "./components/dynamic/dashboard-overview";
 import MyOrders from "./pages/MyOrders";
 import { CartPage } from "./pages/Cart";
+import IsAdmin from "./context/IsAdmin.jsx";
 
 const App = () => {
     const HomeWithLayout = withLayout(Home, MainLayout);
     const ProductDetailWithLayout = withLayout(ProductDetail, MainLayout);
-    const ProfileWithLayout = withLayout(Profile, MainLayout)
-    const OrderWithLayout = withLayout(MyOrders, MainLayout)
-    const CartWithLayout = withLayout(CartPage, MainLayout)
+    const ProfileWithLayout = withLayout(Profile, MainLayout);
+    const OrderWithLayout = withLayout(MyOrders, MainLayout);
+    const CartWithLayout = withLayout(CartPage, MainLayout);
 
     return (
         <Routes>
+            {/* Public */}
             <Route path="/" element={<HomeWithLayout />} />
             <Route path="/products" element={<Product />} />
             <Route path="/products/:id" element={<ProductDetailWithLayout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
-
+            {/* USER */}
             <Route element={<RequireAuth />}>
-            <Route path="/profile" element={<ProfileWithLayout/>}/>
-            <Route path="/profile/orders" element={<OrderWithLayout/>}/>
-            <Route path="/profile/cart" element={<CartWithLayout/>}/>
+                <Route path="/profile" element={<ProfileWithLayout />} />
+                <Route path="/profile/orders" element={<OrderWithLayout />} />
+                <Route path="/profile/cart" element={<CartWithLayout />} />
+            </Route>
+
+            {/* ADMIN */}
+            <Route element={<IsAdmin />}>
                 <Route path="/dashboard" element={<Dashboard />}>
                     <Route index element={<DashboardOverview />} />
                     <Route path="products" element={<ProductsPage />} />
