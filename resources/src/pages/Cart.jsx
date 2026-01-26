@@ -5,8 +5,11 @@ import { Container } from "@/components/ui/container";
 import { Minus, Plus, Trash } from "lucide-react";
 import { useState, useEffect } from "react";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
-
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export const CartPage = () => {
+    const navigate = useNavigate();
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(false);
     const [updatingItem, setUpdatingItem] = useState(null);
@@ -97,6 +100,27 @@ export const CartPage = () => {
     if (!cart || !cart.items || cart.items.length === 0)
         return <div>Keranjangmu kosong 😢</div>;
 
+    const handdleCheckout = async (total) => {
+        try {
+            const res = await axios.post(
+                "http://localhost:8000/api/createTransaksi",
+                { totals: total },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                }
+            );
+            const data = await res.data;
+            if (res.status === 200 || res.status === 201) {
+                navigate("/checkout",{state: { transaksiId: data.data.id }});
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const total = cart.items.reduce((sum, i) => sum + i.subtotal, 0);
 
     return (
@@ -183,10 +207,9 @@ export const CartPage = () => {
                         <span>Total:</span>
                         <span>Rp {total}</span>
                     </div>
-
-                    <Button className="w-full mt-4" disabled={loading}>
-                        Checkout
-                    </Button>
+                        <Button onClick={() => handdleCheckout(total)} className="w-full mt-4" disabled={loading}>
+                            Checkout
+                        </Button>
                 </CardContent>
             </Card>
         </Container>

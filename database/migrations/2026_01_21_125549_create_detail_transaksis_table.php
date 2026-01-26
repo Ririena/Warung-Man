@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger("total");
             $table->bigInteger("hargaSatuan");
+            $table->bigInteger("quantity");
             $table->foreignId("id_transaksi")->constrained("transaksis")->cascadeOnDelete();
             $table->foreignId("id_product")->constrained("products")->cascadeOnDelete();
             $table->timestamps();

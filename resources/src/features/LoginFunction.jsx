@@ -39,7 +39,7 @@ export const LoginCard = () => {
                 navigate("/dashboard");
                 return;
             }else if(user.role == "user"){
-                // navigate("/", setTimeout(1000));
+                navigate("/", setTimeout(1000));
                 return;
             }
         } catch (error) {
