@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Kategori;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,6 +23,7 @@ class DatabaseSeeder extends Seeder
             "email" => "admin@example.com",
             "password" => bcrypt("password"),
             "role" => "admin",
+            "alamat" => "Jl. Admin No.1"
         ]);
         // $roles = ['admin','karyawan','pelanggan'];
         // foreach($roles as $role){
@@ -31,6 +33,20 @@ class DatabaseSeeder extends Seeder
         // }
         Kategori::create([
         "name" => "test"
+        ]);
+        Product::create([
+            "title" => "Product Test",
+            "description" => "This is a test product",
+            "price" => 10000,
+            "stock" => 50,
+            "id_kategori" => 1
+        ]);
+        Product::create([
+            "title" => "Product Test2",
+            "description" => "This is a test product2",
+            "price" => 10000,
+            "stock" => 50,
+            "id_kategori" => 1
         ]);
 
     }

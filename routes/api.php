@@ -31,7 +31,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/transaksi-all', [TransaksiController::class, 'showAll']);
     Route::apiResource('/kategoris', KategoriController::class);
     Route::apiResource('/users', userController::class);
-});
+    // Route::get('/transaksi-all', [TransaksiController::class, 'showAll']);
+    Route::post('/createTransaksi', [TransaksiController::class, 'createTransaksi']);
+    });
 
 // Route::get("/users",[userController::class, "index"])->name("user.index");
 Route::post('/register', RegisterController::class)->name('register');

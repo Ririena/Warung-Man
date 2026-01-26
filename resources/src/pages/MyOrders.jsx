@@ -5,12 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
 import { useState, useEffect } from "react";
 
-const statusVariant = (isPaid) => {
-    return isPaid === 1 ? "default" : "outline";
+const statusVariant = (status) => {
+    return status === "dikirim" ? "default" : "outline";
 };
 
-const getStatusLabel = (isPaid) => {
-    return isPaid === 1 ? "Lunas" : "Belum Lunas";
+const getStatusLabel = (status) => {
+    return status === "dikirim" ? "Lunas" : "Belum Lunas";
+};
+const getStatusPengiriman = (status) => {
+    return status === "dikirim" ? "Dikirim" : "Diproses";
 };
 
 const MyOrders = () => {
@@ -35,18 +38,19 @@ const MyOrders = () => {
                 }
 
                 const data = await res.json();
-
+                console.log(data);
                 // Format data dari API ke format yang sesuai
                 const formattedOrders = (data.data || []).map((order) => ({
                     id: order.id,
                     name: order.name,
-                    date: new Date(order.transaction_date).toLocaleDateString('id-ID', {
+                    date: new Date(order.payment.created_at).toLocaleDateString('id-ID', {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
                     }),
-                    isPaid: order.is_paidOrNah,
-                    total: `Rp ${parseInt(order.totals).toLocaleString("id-ID")}`,
+                    isPaid: order.payment.status,
+                    total: `Rp ${parseInt(order.payment.amount).toLocaleString("id-ID")}`,
+                    status: order.status,
                 }));
 
                 setOrders(formattedOrders);
@@ -68,7 +72,7 @@ const MyOrders = () => {
 
         fetchOrders();
     }, [token]);
-    console.log(orders);
+    // console.log(orders);
     return (
         <Container>
             <div className="flex flex-col md:flex-row gap-6">
@@ -143,6 +147,11 @@ const MyOrders = () => {
                                 <div>
                                     <Badge variant={statusVariant(order.isPaid)}>
                                         {getStatusLabel(order.isPaid)}
+                                    </Badge>
+                                </div>
+                                <div>
+                                    <Badge variant={statusVariant(order.status)}>
+                                        {getStatusPengiriman(order.status)}
                                     </Badge>
                                 </div>
                             </div>
