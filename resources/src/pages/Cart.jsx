@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Container } from "@/components/ui/container";
 import { Minus, Plus, Trash } from "lucide-react";
 import { useState, useEffect } from "react";
+import { CircleX } from "lucide-react";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
 
 export const CartPage = () => {
@@ -95,100 +96,124 @@ export const CartPage = () => {
 
     if (loading) return <div>Loading cart...</div>;
     if (!cart || !cart.items || cart.items.length === 0)
-        return <div>Keranjangmu kosong 😢</div>;
+        return (
+            <div>
+                <Container className="">
+                    <div className="flex gap-3 justify-center">
+                        <aside className="md:w-64 md:shrink-0">
+                            <ProfileSidebar />
+                        </aside>
+                        <Card className="rounded-sm p-4 w-3/4 h-auto">
+                            <CardHeader>
+                                <CardTitle>Keranjang Belanja</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4 flex items-center justify-center h-[60%]">
+                                <div className="grid grid-cols-1 gap-1">
+                                    <CircleX className="mx-auto size-15 text-gray-500"/>
+                                    Keranjangmu masih kosong.
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </Container>
+            </div>
+        );
 
     const total = cart.items.reduce((sum, i) => sum + i.subtotal, 0);
 
     return (
-        <Container>
-            <aside>
-                <ProfileSidebar />
-            </aside>
-            <Card className="rounded-sm p-4 mt-8">
-                <CardHeader>
-                    <CardTitle>Keranjang Belanja</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {cart.items.map((item) => (
-                        <div
-                            key={item.id}
-                            className="flex items-center justify-between border-b pb-4"
-                        >
-                            <div className="flex items-center gap-4">
-                                <img
-                                    src={
-                                        item.product.image
-                                            ? `/storage/${item.product.image}`
-                                            : "/img/download.jpg"
-                                    }
-                                    alt={item.product.title}
-                                    className="w-16 h-16 object-cover rounded-sm"
-                                />
-                                <div>
-                                    <p className="font-semibold">
-                                        {item.product.title}
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Rp {item.price} x {item.quantity} = Rp{" "}
-                                        {item.subtotal}
-                                    </p>
+        <Container className="">
+            <div className="flex gap-3 items-start justify-center">
+                <aside className="md:w-64 md:shrink-0">
+                    <ProfileSidebar />
+                </aside>
+                <Card className="rounded-sm p-4 w-3/4">
+                    <CardHeader>
+                        <CardTitle>Keranjang Belanja</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {cart.items.map((item) => (
+                            <div
+                                key={item.id}
+                                className="flex items-center justify-between border-b pb-4"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <img
+                                        src={
+                                            item.product.image
+                                                ? `/storage/${item.product.image}`
+                                                : "/img/download.jpg"
+                                        }
+                                        alt={item.product.title}
+                                        className="w-16 h-16 object-cover rounded-sm"
+                                    />
+
+                                    <div>
+                                        <p className="font-semibold">
+                                            {item.product.title}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Rp {item.price} x {item.quantity} =
+                                            Rp {item.subtotal}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() =>
+                                            updateQuantity(
+                                                item.id,
+                                                item.quantity - 1,
+                                            )
+                                        }
+                                        disabled={updatingItem === item.id}
+                                    >
+                                        <Minus size={16} />
+                                    </Button>
+                                    <Input
+                                        value={item.quantity}
+                                        readOnly
+                                        className="w-12 text-center border-0 focus-visible:ring-0"
+                                    />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() =>
+                                            updateQuantity(
+                                                item.id,
+                                                item.quantity + 1,
+                                            )
+                                        }
+                                        disabled={updatingItem === item.id}
+                                    >
+                                        <Plus size={16} />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant="destructive"
+                                        onClick={() => removeItem(item.id)}
+                                        disabled={updatingItem === item.id}
+                                    >
+                                        <Trash size={16} />
+                                    </Button>
                                 </div>
                             </div>
+                        ))}
 
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() =>
-                                        updateQuantity(
-                                            item.id,
-                                            item.quantity - 1,
-                                        )
-                                    }
-                                    disabled={updatingItem === item.id}
-                                >
-                                    <Minus size={16} />
-                                </Button>
-                                <Input
-                                    value={item.quantity}
-                                    readOnly
-                                    className="w-12 text-center border-0 focus-visible:ring-0"
-                                />
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() =>
-                                        updateQuantity(
-                                            item.id,
-                                            item.quantity + 1,
-                                        )
-                                    }
-                                    disabled={updatingItem === item.id}
-                                >
-                                    <Plus size={16} />
-                                </Button>
-                                <Button
-                                    size="icon"
-                                    variant="destructive"
-                                    onClick={() => removeItem(item.id)}
-                                    disabled={updatingItem === item.id}
-                                >
-                                    <Trash size={16} />
-                                </Button>
-                            </div>
+                        <div className="flex justify-between font-bold text-lg mt-4">
+                            <span>Total:</span>
+                            <span>Rp {total}</span>
                         </div>
-                    ))}
 
-                    <div className="flex justify-between font-bold text-lg mt-4">
-                        <span>Total:</span>
-                        <span>Rp {total}</span>
-                    </div>
-
-                    <Button className="w-full mt-4" disabled={loading}>
-                        Checkout
-                    </Button>
-                </CardContent>
-            </Card>
+                        <Button className="w-full mt-4" disabled={loading}>
+                            Checkout
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
         </Container>
     );
 };

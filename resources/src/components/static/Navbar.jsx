@@ -1,5 +1,6 @@
 "use client";
 
+import logo from "@/assets/logo-warung-man-500x500.png"
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Search, Menu, X, User } from "lucide-react";

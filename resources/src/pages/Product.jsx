@@ -16,10 +16,12 @@ const Product = () => {
         <>
             <main className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-6 md:py-8">
                 <div className="flex flex-col md:flex-row gap-6">
-                    <aside className="md:w-64 md:shrink-0" aria-label="Filters">
-                    </aside>
+                    <aside
+                        className="md:w-64 md:shrink-0"
+                        aria-label="Filters"
+                    ></aside>
                     <section className="flex-1" aria-label="Product list">
-                        <div className="grid grid-cols-5 gap-4">
+                        <div className="grid grid-cols-4 gap-4">
                             {products.length > 0 ? (
                                 products.map((product) => (
                                     <ProductCard
@@ -69,8 +71,12 @@ export const ProductCard = ({ product }) => {
                     </div>
 
                     <div className="flex gap-1.5 justify-center items-center">
-                        <Button className="w-2/3 cursor-pointer bg-green-600 hover:bg-green-800">Beli</Button>
-                        <Button className="w-1/3 cursor-pointer bg-green-800 hover:bg-green-950"><ShoppingCart/></Button>
+                        <Button className="w-2/3 cursor-pointer bg-green-600 hover:bg-green-800">
+                            Beli
+                        </Button>
+                        <Button className="w-1/3 cursor-pointer bg-green-800 hover:bg-green-950">
+                            <ShoppingCart />
+                        </Button>
                     </div>
                 </div>
             </Card>
