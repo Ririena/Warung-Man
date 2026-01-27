@@ -22,7 +22,7 @@ export const ProductsCard = ({ dataC, dataP }) => {
     const handleNavigation = (id) => {
         navigate(`/products/${id}`);
     };
-    console.log(dataC, dataP);
+    // console.log(dataP)
     return (
         <>
             <Container>

@@ -35,8 +35,13 @@ export const LoginCard = () => {
                 token,
                 user,
             });
-
-            navigate("/", setTimeout(1000));
+            if(user.role == "admin"){
+                navigate("/dashboard");
+                return;
+            }else if(user.role == "user"){
+                navigate("/", setTimeout(1000));
+                return;
+            }
         } catch (error) {
             console.error(error.response?.data || error.message);
         }

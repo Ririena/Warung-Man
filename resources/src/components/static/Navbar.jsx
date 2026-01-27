@@ -1,6 +1,8 @@
 "use client";
-
-import logo from "@/assets/logo-warung-man-500x500.png"
+import { useContext } from "react";
+// import { Navigate, Outlet } from "react-router-dom";
+import { UserStore } from "@/context/UserContext";
+import Logo from "@/assets/logo-warung-man-500x500.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Search, Menu, X, User } from "lucide-react";
@@ -20,19 +22,19 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 export function Navbar() {
+    const { user } = useContext(UserStore);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const MAIN_MENU = [
-        { label: "Produk", to: "/product" },
+        { label: "Produk", to: "/" },
         { label: "Kontak", to: "/contact" },
     ];
 
     const USER_MENU = [
         { label: "Profile", to: "/profile" },
         { label: "Pesanan", to: "/orders" },
-        { label: "Logout", to: "/logout", danger: true },
+        { ...user ? { label: "Logout", to: "/logout", danger: true } : { label: "Login", to: "/login" } },
     ];
-
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-border bg-background">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -40,7 +42,7 @@ export function Navbar() {
                     <Link to="/" className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                             <img
-                                src={logo}
+                                src={Logo}
                                 className="object-fit"
                                 width={1000}
                                 height={1000}
@@ -68,8 +70,10 @@ export function Navbar() {
                             <Search className="w-5 h-5" />
                         </Button>
                         <Button className="p-2  rounded-lg transition-colors relative">
+                            <Link to="/profile/cart">
                             <ShoppingCart className="w-5 h-5" />
                             <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
+                            </Link>
                         </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>

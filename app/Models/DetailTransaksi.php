@@ -12,4 +12,8 @@ class DetailTransaksi extends Model
     {
         return $this->belongsTo(Transaksi::class,"id_transaksi");
     }
+    public function product():BelongsTo
+    {
+        return $this->belongsTo(Product::class,"id_product");
+    }
 }

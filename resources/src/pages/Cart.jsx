@@ -6,8 +6,11 @@ import { Minus, Plus, Trash } from "lucide-react";
 import { useState, useEffect } from "react";
 import { CircleX } from "lucide-react";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
-
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export const CartPage = () => {
+    const navigate = useNavigate();
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(false);
     const [updatingItem, setUpdatingItem] = useState(null);
@@ -109,7 +112,7 @@ export const CartPage = () => {
                             </CardHeader>
                             <CardContent className="space-y-4 flex items-center justify-center h-[60%]">
                                 <div className="grid grid-cols-1 gap-1">
-                                    <CircleX className="mx-auto size-15 text-gray-500"/>
+                                    <CircleX className="mx-auto size-15 text-gray-300" />
                                     Keranjangmu masih kosong.
                                 </div>
                             </CardContent>
@@ -118,6 +121,27 @@ export const CartPage = () => {
                 </Container>
             </div>
         );
+
+    const handdleCheckout = async (total) => {
+        try {
+            const res = await axios.post(
+                "http://localhost:8000/api/createTransaksi",
+                { totals: total },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                },
+            );
+            const data = await res.data;
+            if (res.status === 200 || res.status === 201) {
+                navigate("/checkout", { state: { transaksiId: data.data.id } });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const total = cart.items.reduce((sum, i) => sum + i.subtotal, 0);
 
@@ -208,7 +232,15 @@ export const CartPage = () => {
                             <span>Rp {total}</span>
                         </div>
 
-                        <Button className="w-full mt-4" disabled={loading}>
+                        <div className="flex justify-between font-bold text-lg mt-4">
+                            <span>Total:</span>
+                            <span>Rp {total}</span>
+                        </div>
+                        <Button
+                            onClick={() => handdleCheckout(total)}
+                            className="w-full mt-4"
+                            disabled={loading}
+                        >
                             Checkout
                         </Button>
                     </CardContent>
