@@ -2,10 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
-function CardDetail({ hanndlePayment, dataDetail }) {
+function CardDetail({ dataTransaksi, hanndlePayment, dataDetail }) {
   const [transaksi, setTransaksi] = useState([]);
   const [totalPayment, setTotalPayment] = useState(0);
-
+  const [dataTransaksiState, setDataTransaksiState] = useState([]);
+  useEffect(() => {
+    if (dataTransaksi) {
+        setDataTransaksiState(dataTransaksi);
+        }
+  })
+    console.log("data detail:", dataTransaksi.data);
   useEffect(() => {
     if (dataDetail) {
       setTransaksi(dataDetail);
@@ -82,12 +88,25 @@ function CardDetail({ hanndlePayment, dataDetail }) {
           <p className="text-2xl font-bold text-gray-900">
             Rp {totalPayment.toLocaleString("id-ID")}
           </p>
+          {dataTransaksi.data.payment.status !== "paid" && (
           <Button
             className="bg-green-500 hover:bg-green-600 text-white font-semibold w-32 rounded-lg transition-colors"
             onClick={hanndlePayment}
           >
             Bayar
           </Button>
+            )}
+            {dataTransaksi.data.payment.status === "paid" && (
+                <>
+            <div className="text-green-600 font-semibold">
+            Pembayaran Selesai
+          </div>
+            <div className="text-green-600 font-semibold">
+             barang {dataTransaksi.data.status === "dikirim" ? "belum dikirim" : "dikirim"} ke alamat Anda
+          </div>
+              </>
+            )}
+
         </div>
       </div>
     </Card>

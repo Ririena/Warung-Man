@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useFetch } from "@/lib/useFetch";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +47,7 @@ function CheckoutPage() {
                 <aside className="md:w-[250px] md:shrink-0">
                     <ProfileSidebar />
                 </aside>
-                <CardDetail dataDetail={dataTransaksi?.detail_tr} hanndlePayment={() => hanndlePayment(dataTransaksi?.id)} />
+                <CardDetail dataTransaksi={data} dataDetail={dataTransaksi?.detail_tr} hanndlePayment={() => hanndlePayment(dataTransaksi?.id)} />
             </div>
         </Container>
     );

@@ -16,9 +16,11 @@ export const LoginCard = () => {
         email: "",
         password: "",
     });
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
 
         try {
             const res = await axios.post(
@@ -39,10 +41,11 @@ export const LoginCard = () => {
                 navigate("/dashboard");
                 return;
             }else if(user.role == "user"){
-                navigate("/", setTimeout(1000));
+                navigate("/");
                 return;
             }
         } catch (error) {
+            setError(error.response?.data?.message || "Login gagal. Silakan coba lagi.");
             console.error(error.response?.data || error.message);
         }
     };
@@ -50,6 +53,7 @@ export const LoginCard = () => {
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
     return (
         <Card className="px-9 py-11 text-green-600">
             <div className="grid grid-cols-1 justify-items-center gap-2">
@@ -84,8 +88,7 @@ export const LoginCard = () => {
                             className="border-[1.5px] bg-slate-200 rounded-sm text-black"
                             placeholder="Masukkan password"
                         />
-                        <ErrorDataKredensial />
-                        <ErrorPassword />
+                        {error && <p className="text-red-600 text-[13px]">*{error}</p>}
                     </div>
                     <Button
                         type="submit"
@@ -102,21 +105,5 @@ export const LoginCard = () => {
                 </div>
             </form>
         </Card>
-    );
-};
-
-const ErrorDataKredensial = () => {
-    return (
-        <p className="text-red-600 text-[13px]">
-            *Data kredensial yang anda masukkan tidak valid.
-        </p>
-    );
-};
-
-const ErrorPassword = () => {
-    return (
-        <p className="text-red-600 text-[13px]">
-            *Password yang anda masukkan salah.
-        </p>
     );
 };

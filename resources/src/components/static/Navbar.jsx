@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { UserStore } from "@/context/UserContext";
 import Logo from "@/assets/logo-warung-man-500x500.png";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Search, Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +21,10 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import axios from "axios";
 export function Navbar() {
     const { user } = useContext(UserStore);
+    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const MAIN_MENU = [
@@ -30,10 +32,27 @@ export function Navbar() {
         { label: "Kontak", to: "/contact" },
     ];
 
+    async function logout() {
+        try{
+            await axios.post("/api/logout", {}, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("TOKEN")}`,
+                    Accept: "application/json",
+                },
+            });
+            localStorage.removeItem("TOKEN");
+            navigate('/login');
+        }catch(error){
+            console.error("Error during logout:", error);
+            localStorage.removeItem("TOKEN");
+            navigate('/login');
+        }
+    }
+
     const USER_MENU = [
         { label: "Profile", to: "/profile" },
         { label: "Pesanan", to: "/profile/orders" },
-        { ...user ? { label: "Logout", to: "/logout", danger: true } : { label: "Login", to: "/login" } },
+        ...(user ? [{ label: "Logout", onClick: logout, danger: true }] : [{ label: "Login", to: "/login" }]),
     ];
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-border bg-background">
@@ -66,9 +85,6 @@ export function Navbar() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <Button className="p-2  rounded-lg transition-colors hidden sm:inline-flex">
-                            <Search className="w-5 h-5" />
-                        </Button>
                         <Button className="p-2  rounded-lg transition-colors relative">
                             <Link to="/profile/cart">
                             <ShoppingCart className="w-5 h-5" />
@@ -94,14 +110,19 @@ export function Navbar() {
                                 {USER_MENU.map((item) => (
                                     <DropdownMenuItem
                                         key={item.label}
-                                        asChild
                                         className={
                                             item.danger
                                                 ? "text-red-500 hover:cursor-pointer"
                                                 : "hover:cursor-pointer"
                                         }
+                                        onClick={item.onClick}
+                                        asChild={!item.onClick}
                                     >
-                                        <Link to={item.to}>{item.label}</Link>
+                                        {item.onClick ? (
+                                            <div>{item.label}</div>
+                                        ) : (
+                                            <Link to={item.to}>{item.label}</Link>
+                                        )}
                                     </DropdownMenuItem>
                                 ))}
                             </DropdownMenuContent>

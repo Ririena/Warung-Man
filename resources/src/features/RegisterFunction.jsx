@@ -14,18 +14,22 @@ export const SignupCard = () => {
         password: "",
         password_confirmation: "",
     });
+    const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setErrors({ ...errors, [e.target.name]: "" });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({});
 
         if (formData.password !== formData.password_confirmation) {
-            return alert("Password dan Konfirmasi Password tidak sesuai");
+            setErrors({ password_confirmation: "Password dan Konfirmasi Password tidak sesuai" });
+            return;
         }
 
         try {
@@ -35,9 +39,15 @@ export const SignupCard = () => {
             );
             navigate("/login");
         } catch (error) {
+            if (error.response?.status === 422) {
+                setErrors(error.response.data);
+            } else {
+                setErrors({ general: error.response?.data?.message || "Registrasi gagal" });
+            }
             console.error(error.message);
         }
     };
+
     return (
         <Card className="px-9 py-11 text-green-600">
             <div className="grid grid-cols-1 justify-items-center gap-2">
@@ -59,7 +69,7 @@ export const SignupCard = () => {
                             className="border-[1.5px] bg-slate-200 rounded-sm text-black"
                             placeholder="Masukkan Nama"
                         />
-                        <ErrorAqil />
+                        {errors.name && <p className="text-red-600 text-[13px]">*{errors.name[0]}</p>}
                     </div>
                     <div className="grid grid-cols-1 gap-1">
                         <Label className="text-black font-normal">Email</Label>
@@ -70,7 +80,7 @@ export const SignupCard = () => {
                             className="border-[1.5px] bg-slate-200 rounded-sm text-black"
                             placeholder="example@company.com"
                         />
-                        <ErrorEmail />
+                        {errors.email && <p className="text-red-600 text-[13px]">*{errors.email[0]}</p>}
                     </div>
                     <div className="grid grid-cols-1 gap-1">
                         <Label className="text-black font-normal">
@@ -84,7 +94,7 @@ export const SignupCard = () => {
                             className="border-[1.5px] bg-slate-200 rounded-sm text-black"
                             placeholder="Gunakan password yang kuat"
                         />
-                        <ErrorPassword />
+                        {errors.password && <p className="text-red-600 text-[13px]">*{errors.password[0]}</p>}
                     </div>
                     <div className="grid grid-cols-1 gap-1">
                         <Label className="text-black font-normal">
@@ -98,7 +108,7 @@ export const SignupCard = () => {
                             className="border-[1.5px] bg-slate-200 rounded-sm text-black"
                             placeholder="Masukkan Kembali Password"
                         />
-                        <ErrorConfirmPassword />
+                        {errors.password_confirmation && <p className="text-red-600 text-[13px]">*{errors.password_confirmation}</p>}
                     </div>
                     <Button
                         type="submit"
@@ -116,29 +126,4 @@ export const SignupCard = () => {
             </form>
         </Card>
     );
-};
-
-// Error Komponent Disini, akil goblog sih
-const ErrorConfirmPassword = () => {
-    return (
-        <p className="text-red-600 text-[13px]">
-            *Konfirmasi password tidak sesuai.
-        </p>
-    );
-};
-
-const ErrorEmail = () => {
-    return <p className="text-red-600 text-[13px]">*Email sudah terpakai.</p>;
-};
-
-const ErrorPassword = () => {
-    return (
-        <p className="text-red-600 text-[13px]">
-            *Password minimal memiliki 6 karakter.
-        </p>
-    );
-};
-
-const ErrorAqil = () => {
-    return <p className="text-red-600 text-[13px]">*Aqil Butut.</p>;
 };
