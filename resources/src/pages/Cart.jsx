@@ -114,7 +114,7 @@ export const CartPage = () => {
             );
             const data = await res.data;
             if (res.status === 200 || res.status === 201) {
-                navigate("/checkout",{state: { transaksiId: data.data.id }});
+                navigate("/checkout",{state: { data: data.data }});
             }
         } catch (error) {
             console.error(error);
@@ -125,10 +125,11 @@ export const CartPage = () => {
 
     return (
         <Container>
-            <aside>
+            <div className="flex flex-col md:flex-row gap-6">
+                <aside className="md:w-[250px] md:shrink-0">
                 <ProfileSidebar />
             </aside>
-            <Card className="rounded-sm p-4 mt-8">
+            <Card className="rounded-sm p-4 w-full">
                 <CardHeader>
                     <CardTitle>Keranjang Belanja</CardTitle>
                 </CardHeader>
@@ -212,6 +213,7 @@ export const CartPage = () => {
                         </Button>
                 </CardContent>
             </Card>
+            </div>
         </Container>
     );
 };

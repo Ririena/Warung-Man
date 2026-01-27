@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const statusVariant = (status) => {
     return status === "dikirim" ? "default" : "outline";
@@ -13,7 +14,7 @@ const getStatusLabel = (status) => {
     return status === "dikirim" ? "Lunas" : "Belum Lunas";
 };
 const getStatusPengiriman = (status) => {
-    return status === "dikirim" ? "Dikirim" : "Diproses";
+    return status === "dikirim" ? "belumDikirim" : "Dikirim";
 };
 
 const MyOrders = () => {
@@ -38,7 +39,7 @@ const MyOrders = () => {
                 }
 
                 const data = await res.json();
-                console.log(data);
+                console.log(data.data);
                 // Format data dari API ke format yang sesuai
                 const formattedOrders = (data.data || []).map((order) => ({
                     id: order.id,
@@ -73,6 +74,11 @@ const MyOrders = () => {
         fetchOrders();
     }, [token]);
     // console.log(orders);
+    const navigate = useNavigate();
+    function handdleClik() {
+        // alert("Fitur ini sedang dalam pengembangan.");
+         navigate("/checkout",{state: { data: data.data }});
+    }
     return (
         <Container>
             <div className="flex flex-col md:flex-row gap-6">
@@ -163,7 +169,7 @@ const MyOrders = () => {
                                     ID: {order.id}
                                 </span>
 
-                                <button className="text-primary hover:underline">
+                                <button onClick={handdleClik} className="text-primary hover:underline">
                                     Lihat Detail
                                 </button>
                             </div>

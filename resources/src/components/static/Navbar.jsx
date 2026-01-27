@@ -32,7 +32,7 @@ export function Navbar() {
 
     const USER_MENU = [
         { label: "Profile", to: "/profile" },
-        { label: "Pesanan", to: "/orders" },
+        { label: "Pesanan", to: "/profile/orders" },
         { ...user ? { label: "Logout", to: "/logout", danger: true } : { label: "Login", to: "/login" } },
     ];
     return (

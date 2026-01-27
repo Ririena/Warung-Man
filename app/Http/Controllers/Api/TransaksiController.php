@@ -122,7 +122,7 @@ class TransaksiController extends Controller
             }
             $cart->delete();
             DB::commit();
-            return new TransaksiResource(true,"berhasil menambahkan data",$transaksi);
+            return new TransaksiResource(true,"berhasil menambahkan data",$transaksi->with(["detail_tr.product","payment"])->find($transaksi->id));
         }catch(\Exception $e){
             DB::rollBack();
             return response()->json([
