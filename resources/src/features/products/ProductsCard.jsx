@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useFetch } from "@/lib/useFetch";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
+import { useState, useEffect } from "react";
 import {
     Select,
     SelectContent,
@@ -18,11 +19,59 @@ import {
 
 export const ProductsCard = ({ dataC, dataP }) => {
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [maxPrice, setMaxPrice] = useState("");
+    const [filteredProducts, setFilteredProducts] = useState(dataP);
 
     const handleNavigation = (id) => {
         navigate(`/products/${id}`);
     };
-    // console.log(dataP)
+
+    const handleCategoryChange = (categoryId) => {
+        setSelectedCategories((prev) =>
+            prev.includes(categoryId)
+                ? prev.filter((id) => id !== categoryId)
+                : [...prev, categoryId]
+        );
+    };
+
+    const applyFilter = () => {
+        let filtered = dataP;
+
+        // Filter by search term
+        if (searchTerm) {
+            filtered = filtered.filter((product) =>
+                product.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by categories
+        if (selectedCategories.length > 0) {
+            filtered = filtered.filter((product) =>
+                selectedCategories.includes(product.category_id)
+            );
+        }
+
+        // Filter by max price
+        if (maxPrice) {
+            filtered = filtered.filter((product) =>
+                parseInt(product.price) <= parseInt(maxPrice)
+            );
+        }
+
+        setFilteredProducts(filtered);
+    };
+
+    useEffect(() => {
+        applyFilter();
+    }, [searchTerm, selectedCategories, maxPrice]);
+
+    const handleAddToCart = (product) => {
+        // Add to cart logic here
+        console.log("Added to cart:", product);
+    };
+
     return (
         <>
             <Container>
@@ -39,7 +88,13 @@ export const ProductsCard = ({ dataC, dataP }) => {
                                         <label className="text-sm font-medium">
                                             Cari Produk
                                         </label>
-                                        <Input placeholder="Nama produk..." />
+                                        <Input
+                                            placeholder="Nama produk..."
+                                            value={searchTerm}
+                                            onChange={(e) =>
+                                                setSearchTerm(e.target.value)
+                                            }
+                                        />
                                     </div>
 
                                     <div className="space-y-3">
@@ -47,8 +102,21 @@ export const ProductsCard = ({ dataC, dataP }) => {
                                             Kategori
                                         </p>
                                         {dataC.map((cate) => (
-                                            <div className="flex items-center space-x-2">
-                                                <Checkbox id={cate.id} />
+                                            <div
+                                                key={cate.id}
+                                                className="flex items-center space-x-2"
+                                            >
+                                                <Checkbox
+                                                    id={cate.id}
+                                                    checked={selectedCategories.includes(
+                                                        cate.id
+                                                    )}
+                                                    onCheckedChange={() =>
+                                                        handleCategoryChange(
+                                                            cate.id
+                                                        )
+                                                    }
+                                                />
                                                 <label
                                                     htmlFor={cate.id}
                                                     className="text-sm"
@@ -59,17 +127,12 @@ export const ProductsCard = ({ dataC, dataP }) => {
                                         ))}
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">
-                                            Harga Maksimal
-                                        </label>
-                                        <Input
-                                            type="number"
-                                            placeholder="Rp 50.000"
-                                        />
-                                    </div>
 
-                                    <Button className="w-full">
+
+                                    <Button
+                                        onClick={applyFilter}
+                                        className="w-full"
+                                    >
                                         Terapkan Filter
                                     </Button>
                                 </CardContent>
@@ -78,22 +141,22 @@ export const ProductsCard = ({ dataC, dataP }) => {
 
                         <section className="flex-1 ">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {dataP.map((item) => (
+                                {filteredProducts.map((item) => (
                                     <Card
-                                        onClick={() =>
-                                            handleNavigation(item.id)
-                                        }
                                         key={item.id}
                                         className="rounded-sm overflow-hidden flex flex-col h-full"
                                     >
-                                        <div className="w-full bg-muted overflow-hidden aspect-square">
+                                        <div
+                                            className="w-full bg-muted overflow-hidden aspect-square cursor-pointer"
+                                            onClick={() => handleNavigation(item.id)}
+                                        >
                                             <img
                                                 src={
                                                     item.image ||
                                                     "/img/download.jpg"
                                                 }
                                                 alt={item.title}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-cover hover:scale-110 transition-transform"
                                             />
                                         </div>
 
@@ -105,7 +168,9 @@ export const ProductsCard = ({ dataC, dataP }) => {
                                                         <span className="text-sm">
                                                             Rp
                                                         </span>
-                                                        {parseInt(item.price).toLocaleString("IDR")}
+                                                        {parseInt(item.price).toLocaleString(
+                                                            "IDR"
+                                                        )}
                                                     </span>
                                                 </CardTitle>
 
@@ -115,10 +180,18 @@ export const ProductsCard = ({ dataC, dataP }) => {
                                             </div>
 
                                             <div className="flex gap-1.5 justify-center items-center">
-                                                <Button className="w-2/3 cursor-pointer bg-green-600 hover:bg-green-800">
+                                                <Button
+                                                    onClick={() =>
+                                                        handleNavigation(item.id)
+                                                    }
+                                                    className="w-2/3 cursor-pointer bg-green-600 hover:bg-green-800"
+                                                >
                                                     Beli
                                                 </Button>
-                                                <Button className="w-1/3 cursor-pointer bg-green-800 hover:bg-green-950">
+                                                <Button
+                                                    onClick={() => handleAddToCart(item)}
+                                                    className="w-1/3 cursor-pointer bg-green-800 hover:bg-green-950"
+                                                >
                                                     <ShoppingCart />
                                                 </Button>
                                             </div>

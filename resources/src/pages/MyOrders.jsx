@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
 import { useState, useEffect } from "react";
+import { data, useNavigate } from "react-router-dom";
 
 const statusVariant = (status) => {
     return status === "dikirim" ? "default" : "outline";
@@ -13,7 +14,7 @@ const getStatusLabel = (status) => {
     return status === "dikirim" ? "Lunas" : "Belum Lunas";
 };
 const getStatusPengiriman = (status) => {
-    return status === "dikirim" ? "Dikirim" : "Diproses";
+    return status === "dikirim" ? "belumDikirim" : "Dikirim";
 };
 
 const MyOrders = () => {
@@ -38,7 +39,8 @@ const MyOrders = () => {
                 }
 
                 const data = await res.json();
-                console.log(data);
+                console.log(data.data);
+                // console.log(data.data[0]);
                 // Format data dari API ke format yang sesuai
                 const formattedOrders = (data.data || []).map((order) => ({
                     id: order.id,
@@ -51,6 +53,9 @@ const MyOrders = () => {
                     isPaid: order.payment.status,
                     total: `Rp ${parseInt(order.payment.amount).toLocaleString("id-ID")}`,
                     status: order.status,
+                    payment: order.payment,
+                    detail_tr: order.detail_tr,
+
                 }));
 
                 setOrders(formattedOrders);
@@ -73,6 +78,12 @@ const MyOrders = () => {
         fetchOrders();
     }, [token]);
     // console.log(orders);
+    const navigate = useNavigate();
+    function handdleClik(i) {
+        // alert("Fitur ini sedang dalam pengembangan.");
+        console.log(orders[i]);
+         navigate("/checkout",{state: { data: orders[i] }});
+    }
     return (
         <Container>
             <div className="flex flex-col md:flex-row gap-6">
@@ -115,7 +126,7 @@ const MyOrders = () => {
                         </Card>
                     )}
 
-                    {orders.map((order) => (
+                    {orders.map((order,index) => (
                         <Card
                             key={order.id}
                             className="rounded-sm p-4 hover:bg-secondary/40 transition"
@@ -163,7 +174,7 @@ const MyOrders = () => {
                                     ID: {order.id}
                                 </span>
 
-                                <button className="text-primary hover:underline">
+                                <button onClick={() => handdleClik(index)} className="text-primary hover:underline">
                                     Lihat Detail
                                 </button>
                             </div>

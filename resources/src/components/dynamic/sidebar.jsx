@@ -1,20 +1,35 @@
 import { NavLink } from "react-router-dom";
+import axios from "axios";
 import {
     LayoutDashboard,
     Package,
     Layers,
     CreditCard,
     Users,
+    LogOut,
 } from "lucide-react";
+// import { Axios } from "node_modules/axios/index.cjs";
 
 export default function Sidebar() {
     const menuItems = [
-        { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
+        { to: "/dashboard", label: "Dashboards", icon: LayoutDashboard, end: true },
         { to: "/dashboard/products", label: "Products", icon: Package },
         { to: "/dashboard/categories", label: "Categories", icon: Layers },
         { to: "/dashboard/transactions", label: "Transactions", icon: CreditCard },
         { to: "/dashboard/users", label: "Users", icon: Users },
     ];
+
+    const handleLogout = () => {
+        // Add logout logic here
+        const res = axios.post("/api/logout", {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("TOKEN")}`,
+                Accept: "application/json",
+            },
+        });
+        localStorage.clear();
+        window.location.href = "/login";
+    };
 
     return (
         <aside className="w-64 bg-white border-r h-screen flex flex-col">
@@ -50,6 +65,17 @@ export default function Sidebar() {
                     );
                 })}
             </nav>
+
+            {/* LOGOUT BUTTON */}
+            <div className="p-4 border-t">
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-foreground hover:bg-red-100 hover:text-red-600 transition-all font-medium"
+                >
+                    <LogOut size={20} />
+                    <span>Logout</span>
+                </button>
+            </div>
         </aside>
     );
 }

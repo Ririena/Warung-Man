@@ -2,33 +2,24 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useFetch } from "@/lib/useFetch";
 import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import ProfileSidebar from "@/components/dynamic/profile-sidebar";
-
+import CardDetail from '../components/DetailCard.jsx';
 import axios from "axios";
 function CheckoutPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { transaksiId } = location.state || {};
-    const [id, setId] = useState(null);
-    useEffect(() => {
-        if (transaksiId) {
-            setId(transaksiId);
-        }
-    });
-
-    const { data, loading, fetchData } = useFetch(`api/products`);
-
+    const data = location.state || {};
+    const [dataTransaksi, setData] = useState(null);
     useEffect(() => {
         if (data) {
-            fetchData();
+            setData(data.data);
         }
-    }, []);
-    console.log(id);
-    console.log("DATA" + data);
-    async function hanndlePayment() {
+    });
+    // console.log("Transaksi ID:", dataTransaksi);
+    async function hanndlePayment(id) {
         try {
             const res = await axios.post(
                 "http://localhost:8000/api/transaksi",
@@ -49,48 +40,16 @@ function CheckoutPage() {
             console.error("Error during payment:", error);
         }
     }
+    // console.log(dataTransaksi.detail_tr);
     return (
-        <div>
-            <Container className="">
-                <div className="flex gap-3 justify-center">
-                    <aside className="md:w-64 md:shrink-0">
-                        <ProfileSidebar />
-                    </aside>
-                    <Card className="rounded-sm p-4 w-3/4 h-auto">
-                        <CardHeader>
-                            <CardTitle>Checkout</CardTitle>
-                        </CardHeader>
-                        <CardContent className="">
-                            <div className="grid grid-cols-1 gap-1">
-                                <div className="border-2 shadow-md flex p-2 w-full justify-between items-center">
-                                    <div className="flex gap-6 items-center">
-                                        <div>
-                                            <img
-                                                src="/img/download.jpg"
-                                                className="w-24 object-cover"
-                                            />
-                                        </div>
-                                        <div>
-                                            <h1 className="font-semibold ">
-                                                Kecap Begok
-                                            </h1>
-                                            <h1 className="flex">
-                                                <h1 className="text-xs">Rp</h1>5,000
-                                            </h1>
-                                            <h1 className="">
-                                                3 Pcs
-                                            </h1>
-                                        </div>
-                                    </div>
-                                    <div className="font-semibold text-gray-400">Rp15000</div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </Container>
-            <button onClick={hanndlePayment}>bayar</button>
-        </div>
+        <Container>
+            <div className="flex flex-col md:flex-row gap-6">
+                <aside className="md:w-[250px] md:shrink-0">
+                    <ProfileSidebar />
+                </aside>
+                <CardDetail dataTransaksi={data} dataDetail={dataTransaksi?.detail_tr} hanndlePayment={() => hanndlePayment(dataTransaksi?.id)} />
+            </div>
+        </Container>
     );
 }
 export default CheckoutPage;

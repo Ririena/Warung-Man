@@ -14,6 +14,26 @@ use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
+    public function confirmComplete($id)
+    {
+        try {
+            $transaksi = Transaksi::findOrFail($id);
+            if ($transaksi->status !== "dikirim") {
+                return response()->json([
+                    "status" => "err",
+                    "msg" => "Transaksi tidak dalam status 'dikirim'"
+                ], 400);
+            }
+            $transaksi->status = "selesai";
+            $transaksi->save();
+            return new TransaksiResource(true, "Berhasil mengonfirmasi transaksi selesai", $transaksi);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "err",
+                "msg" => "Data tidak ditemukan"
+            ], 404);
+        }
+    }
      public function checkout()
     {
         $user = Auth::getUser();
@@ -78,7 +98,7 @@ class TransaksiController extends Controller
         }
     }
     public function index(){
-        $transaksi = Transaksi::where("id_user",Auth::id())->with("payment")->get();
+        $transaksi = Transaksi::where("id_user",Auth::id())->with(['detail_tr.product','payment'])->get();
         if($transaksi->isEmpty()){
             return response()->json([
                 "status" => "err",
@@ -122,7 +142,7 @@ class TransaksiController extends Controller
             }
             $cart->delete();
             DB::commit();
-            return new TransaksiResource(true,"berhasil menambahkan data",$transaksi);
+            return new TransaksiResource(true,"berhasil menambahkan data",$transaksi->with(["detail_tr.product","payment"])->find($transaksi->id));
         }catch(\Exception $e){
             DB::rollBack();
             return response()->json([
@@ -132,7 +152,7 @@ class TransaksiController extends Controller
     }
     }
     public function showAll(){
-        $transaksi = Transaksi::latest()->with("user")->get();
+        $transaksi = Transaksi::latest()->with(["user","payment"])->get();
         return new TransaksiResource(true,"berhasil mendapatkan data",$transaksi);
     }
     public function show(string $id){

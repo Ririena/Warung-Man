@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('/users', userController::class);
     // Route::get('/transaksi-all', [TransaksiController::class, 'showAll']);
     Route::post('/createTransaksi', [TransaksiController::class, 'createTransaksi']);
+    Route::post('/transaksi/confirm-complete/{id}', [TransaksiController::class, 'confirmComplete']);
     });
 
 // Route::get("/users",[userController::class, "index"])->name("user.index");
