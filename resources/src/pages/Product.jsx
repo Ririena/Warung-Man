@@ -21,16 +21,9 @@ const Product = () => {
                         className="md:w-64 md:shrink-0"
                         aria-label="Filters"
                     >
-                        <div className="fixed grud-cols-1 gap-10">
-                            <h1 className="text-2xl mb-3" >List Kategori</h1>
-                            <h1 className="text-xl text-gray-500">Kategori</h1>
-                            <h1 className="text-xl text-gray-500">Kategori</h1>
-                            <h1 className="text-xl text-gray-500">Kategori</h1>
-                            <h1 className="text-xl text-gray-500">Kategori</h1>
-                        </div>
                     </aside>
                     <section className="flex-1" aria-label="Product list">
-                        <div className="grid grid-cols-5 gap-4">
+                        <div className="grid grid-cols-4 gap-4">
                             {products.length > 0 ? (
                                 products.map((product) => (
                                     <ProductCard
