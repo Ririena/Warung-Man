@@ -22,6 +22,7 @@ import MyOrders from "./pages/MyOrders";
 import { CartPage } from "./pages/Cart";
 import IsAdmin from "./context/IsAdmin.jsx";
 import CheckoutPage from "./pages/Checkout.jsx";
+import CateAddPage from "./features/dashboard/products/CateAdd";
 // import { Link } from "react-router-dom";
 const App = () => {
     const HomeWithLayout = withLayout(Home, MainLayout);
@@ -57,6 +58,7 @@ const App = () => {
                     <Route path="categories" element={<CategoriesPage />} />
                     <Route path="transactions" element={<TransactionsPage />} />
                     <Route path="users" element={<UsersPage />} />
+                    <Route path="categories/add" element={< CateAddPage />} />
                 </Route>
             </Route>
         </Routes>
