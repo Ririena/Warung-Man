@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Plus, Edit2, Trash2, Search, BarChart3 } from 'lucide-react'
 import { useFetch } from '@/lib/useFetch'
+import axios from 'axios'
+import { data, useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 function Card({category}){
 return (<tr key={category.id} className="border-b border-border hover:bg-secondary transition-colors last:border-b-0">
                   <td className="py-4 px-6 font-medium text-foreground">{category.name}</td>
@@ -22,6 +25,7 @@ return (<tr key={category.id} className="border-b border-border hover:bg-seconda
 }
 
 export default function CategoriesPage() {
+    const navigate = useNavigate()
   const { data, loading, error, fetchData } = useFetch("/api/kategoris")
   const [categories, setCategories] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -46,6 +50,12 @@ export default function CategoriesPage() {
   const handleDelete = (id) => {
     setCategories(categories.filter((c) => c.id !== id))
   }
+//   const navigate = useNavigate()
+  const handdleClickUpdate = (index) => {
+    console.log(categories[index])
+    return
+    navigate("categories/add",{state: {data:filteredCategories[index]} })
+  }
 
   return (
     <div className="p-8 space-y-6">
@@ -55,10 +65,12 @@ export default function CategoriesPage() {
           <h2 className="text-3xl font-bold text-foreground">Categories</h2>
           <p className="text-muted-foreground mt-1">Manage product categories</p>
         </div>
+        <Link to={"/dashboard/categories/add"}>
         <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all font-medium">
           <Plus size={20} />
           Add Category
         </button>
+        </Link>
       </div>
 
       {/* Summary Card */}
